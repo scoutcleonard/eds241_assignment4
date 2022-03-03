@@ -51,7 +51,7 @@ options(scipen=999) # not scientific notation
 
 # Read in Sardines Data
 
-```{r}
+```{r read csv}
 sardines <- read.csv(here("data","EU_sardines.csv"))
 ```
 
