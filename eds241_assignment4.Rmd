@@ -51,6 +51,8 @@ options(scipen=999) # not scientific notation
 
 # Read in Sardines Data
 
+The code chunk below reads in the sardines data. 
+
 ```{r read csv}
 sardines <- read.csv(here("data","EU_sardines.csv"))
 ```
@@ -59,12 +61,16 @@ sardines <- read.csv(here("data","EU_sardines.csv"))
 
 ## a.) Estimate a bivariate regression of log(volume_sold_kg) on log(price euro_kg). What is the price elasticity of demand for sardines? Test the null hypothesis that the price elasticity is equal to -1.
 
+The code chunk below adds a variable to the `sardines` dataset that is the log of the price in Euros per kilogram of sardines.  
+
 ```{r a.1.) log transformations}
 #transform  variables to generate log values 
 sardines <- sardines %>% 
   mutate(log_vol_sold_kg = log(volume_sold_kg),
          log_price_euro_kg = log(price_euro_kg))
 ```
+
+The code chunk below runs a regression of `log_price_euro_kg` on `log_vol_sold_kg`. 
 
 ```{r a.2.) linear regression}
 vol_on_price <- lm_robust(log_vol_sold_kg ~ log_price_euro_kg, data = sardines)
@@ -78,11 +84,13 @@ vol_on_price_table %>%
   kable()
 ```
 
-Based on the confidence interval for the linear regression, we can say with 95% confidence that the coefficient on volume sold in kilograms price elasticity, beta 1 (?) is contained by the range -1.69 and -1.39. This means we can reject the null hypothesis that price elasticity is equal to -1. 
+Based on the confidence interval for the linear regression, we can say with 95% confidence that the coefficient on volume sold in kilograms, price elasticity (beta 1) is contained by the range -1.69 and -1.39. This means we can reject the null hypothesis that price elasticity is equal to -1. 
 
 \newpage
 
 ## b.) Like in Lecture 8 (see the IV.R script), we will use wind_m_s as an instrument for log(price_euro_kg). To begin, estimate the first-stage regression relating log(price_euro_kg) to wind_m_s. Interpret the estimated coefficient on wind speed. Does it have the expected sign? Also test for the relevance of the instrument and whether it is a “weak” instrument by reporting the proper F-statistic.
+
+The code chunk below 
 
 ```{r b.1.) linear regression}
 #first stage regression
@@ -96,6 +104,7 @@ wind_price_table %>%
   select(term, estimate, std.error, p.value, conf.low, conf.high) %>%
   kable()
 ```
+
 The estimated coefficient on wind speed is 0.07, which tells us that for each 1 m/s increase in wind speed, the price of sardines in euros per kilogram increases by .7 euros.
 
 I think that this does have the expected sign (positive) because I would expect demand for sardines to increase as wind speed increases which would negatively impacting supply. Wind speed does not impact demand for sardines, but the supply (ie demand is the same, but there are fewer sardines, and the price is driven up). 
@@ -122,6 +131,8 @@ summary(tsls1)
 ```
 
 The estimated price elasticity of demand for sardines is -1.09. 
+
+\newpage
 
 ## d.) Repeat the exercise in (c), but include fixed effects for each year, month, and country. [Hint: you can use the command “as.factor(country) + as.factor(year) +as.factor(month)” to the ivreg function in R]. Report the estimated price elasticity of demand and the F-statistic testing for relevant and non-weak instruments.
 
